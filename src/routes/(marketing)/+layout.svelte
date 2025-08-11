@@ -51,7 +51,7 @@
 				{/each}
 
 				<li>
-					{#if data.user}
+					{#if data.user.user}
 						<a href="/app" class="btn btn-primary rounded-md bg-white text-black">Dashboard</a>
 					{:else}
 						<a href="/signin" class="btn btn-primary rounded-md">Login</a>
