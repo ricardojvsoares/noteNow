@@ -1,3 +1,21 @@
 @import 'tailwindcss';
 @plugin '@tailwindcss/forms';
 @plugin '@tailwindcss/typography';
+@plugin "daisyui";
+
+@plugin "daisyui" {
+	themes:
+		black --default,
+		light --preferslight;
+}
+
+@custom-variant no-js {
+	&:where(html.no-js *) {
+		@slot;
+	}
+}
+
+.bprogress .bar {
+	background: #ffffff;
+	height: 6px;
+}
