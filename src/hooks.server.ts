@@ -1,21 +1,19 @@
-import { db } from '$lib/server/db';
-import { users } from '$lib/server/db/schema';
 import { type Handle, type HandleServerError } from '@sveltejs/kit';
 import { sequence } from '@sveltejs/kit/hooks';
-import { eq } from 'drizzle-orm';
+import { svelteKitHandler } from 'better-auth/svelte-kit';
+import { auth } from '$lib/server/auth';
+
+const authHandle: Handle = async ({ event, resolve }) => {
+	const session = await auth.api.getSession({
+		headers: event.request.headers
+	});
+	if (session) {
+		event.locals.session = session;
+	}
+	return svelteKitHandler({ event, resolve, auth });
+};
 
 export const handle1: Handle = async ({ event, resolve }) => {
-	event.locals.session = {
-		user: (
-			await db
-				.select()
-				.from(users)
-				.where(eq(users.id, '3e0bb3d0-2074-4a1e-6263-d13dd10cb0cf'))
-				.limit(1)
-		)[0],
-		session: 'session'
-	};
-
 	const response = await resolve(event, {
 		transformPageChunk: ({ html }) => {
 			return html.replace('%sveltekit.lang%', event.cookies.get('lang') || 'en');
@@ -27,14 +25,11 @@ export const handle1: Handle = async ({ event, resolve }) => {
 	return response;
 };
 
-export const handle = sequence(handle1);
+export const handle = sequence(handle1, authHandle);
 
 export const handleError: HandleServerError = async ({ error, event, status, message }) => {
 	return {
-		event,
-		error,
-		status,
-		message,
+		message: 'An unexpected error occurred.',
 		code: 'UNEXPECTED'
 	};
 };

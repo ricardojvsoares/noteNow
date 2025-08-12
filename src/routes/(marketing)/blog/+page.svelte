@@ -3,10 +3,13 @@
 	import { POSTS_PER_PAGE } from '$lib/constants.js';
 	import type { PostsResponse } from '$lib/types.js';
 
+	// import type { PageProps } from './$types';
+
 	let { data } = $props();
 
 	let posts = $derived(data.posts.posts);
-	let currentPage = $derived(+(page.url.searchParams.get('page') ?? 1));
+	// let currentPage = $derived(+(page.url.searchParams.get('page') ?? 1));
+	let currentPage = 1;
 	let isLoading = $state(false);
 	let firstLoadedPage = $derived(currentPage);
 	let lastLoadedPage = $derived(currentPage);
